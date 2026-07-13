@@ -67,9 +67,16 @@ def call_gemini(image_path, model_name="gemini-1.5-flash", retries=3):
                 )
             
             raw_text = response.text.strip()
-            if not raw_text.endswith('}'):
-                raw_text += '}'
             
+            # Bulletproof JSON extraction
+            start = raw_text.find('{')
+            if start != -1:
+                end = raw_text.rfind('}')
+                if end != -1 and end > start:
+                    raw_text = raw_text[start:end+1]
+                else:
+                    raw_text = raw_text[start:] + '}'
+                    
             try:
                 data = json.loads(raw_text)
                 return data, None
