@@ -36,29 +36,25 @@ Return ONLY valid JSON, no other text.
 """
 
 def call_gemini(image_path, model_name="gemini-1.5-flash", retries=3):
-    try:
-        img = Image.open(image_path)
-    except Exception as e:
-        return None, f"Failed to open image: {e}"
-
     model = genai.GenerativeModel(model_name)
     
     backoffs = [2, 5, 15]
     
     for attempt in range(retries):
         try:
-            response = model.generate_content(
-                [PROMPT, img],
-                generation_config=genai.types.GenerationConfig(
-                    response_mime_type="application/json",
-                ),
-                safety_settings={
-                    HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
-                    HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
-                    HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
-                    HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
-                }
-            )
+            with Image.open(image_path) as img:
+                response = model.generate_content(
+                    [PROMPT, img],
+                    generation_config=genai.types.GenerationConfig(
+                        response_mime_type="application/json",
+                    ),
+                    safety_settings={
+                        HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
+                        HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
+                        HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
+                        HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+                    }
+                )
             
             raw_text = response.text
             

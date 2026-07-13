@@ -314,6 +314,14 @@
                 document.getElementById('duplicates-found').innerText = stats.duplicates;
         };
 
+        window.onReceiptProcessed = function(payload) {
+            if (window.addActivityLog) window.addActivityLog(payload.log);
+            if (window.updateStats) {
+                // Fetch latest stats on each process to update cards (optional, or rely on payload if we passed counts)
+                pywebview.api.get_stats().then(window.updateStats);
+            }
+        };
+
         window.addActivityLog = function(log) {
             const tbody = document.getElementById('recent-activity');
             if (!tbody) return;

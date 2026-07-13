@@ -1,6 +1,9 @@
 import sys
 from pathlib import Path
 from tqdm import tqdm
+import base64
+import io
+from PIL import Image
 
 from config import init_directories, RAW_DIR
 from ai import process_receipt_ai
@@ -41,11 +44,11 @@ def process_single_receipt(image_path):
     
     # Organize and Excel
     if is_valid:
-        move_to_processed(image_path, metadata.get('category', 'Other'), new_filename)
+        new_path = move_to_processed(image_path, metadata.get('category', 'Other'), new_filename)
         append_to_excel(metadata, new_filename, flagged=False)
         log_event({"file": image_path.name, "status": "processed", "category": metadata.get('category'), "confidence": metadata.get('confidence')})
     else:
-        move_to_review(image_path, new_filename)
+        new_path = move_to_review(image_path, new_filename)
         append_to_excel(metadata, new_filename, flagged=True)
         log_event({"file": image_path.name, "status": "needs_review", "reason": reason})
         
@@ -59,12 +62,37 @@ def process_single_receipt(image_path):
             'receipt_number': metadata.get('receipt_number')
         })
         
+    # Generate image preview
+    try:
+        with Image.open(new_path) as img:
+            # Resize if wider than 800px
+            if img.width > 800:
+                ratio = 800 / img.width
+                new_size = (800, int(img.height * ratio))
+                img = img.resize(new_size, Image.Resampling.LANCZOS)
+            
+            # Convert to RGB to ensure we can save as JPEG
+            if img.mode != 'RGB':
+                img = img.convert('RGB')
+                
+            buffer = io.BytesIO()
+            img.save(buffer, format="JPEG", quality=85)
+            b64_str = base64.b64encode(buffer.getvalue()).decode('utf-8')
+            image_data = f"data:image/jpeg;base64,{b64_str}"
+    except Exception as e:
+        image_data = None
+        
     return {
         "filename": image_path.name, 
         "status": "processed" if is_valid else "needs_review",
         "category": metadata.get('category', 'Other'),
         "vendor": metadata.get('retailer', '-'),
-        "amount": metadata.get('amount', '-')
+        "amount": metadata.get('amount', '-'),
+        "date": metadata.get('date', '-'),
+        "receipt_number": metadata.get('receipt_number', '-'),
+        "currency": "USD", # Assuming USD or extract if available
+        "confidence": metadata.get('confidence', 0),
+        "image_data": image_data
     }
 
 def main(ui_callback=None, source_dir=None):
@@ -99,4 +127,6 @@ def main(ui_callback=None, source_dir=None):
     print("Processing complete.")
 
 if __name__ == "__main__":
-    main()
+    import sys
+    source = sys.argv[1] if len(sys.argv) > 1 else None
+    main(source_dir=source)

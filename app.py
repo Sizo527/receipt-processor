@@ -9,7 +9,7 @@ from pathlib import Path
 
 # Import backend logic
 from main import main
-from config import PROCESSED_DIR, DUPLICATES_DIR, REPORTS_DIR
+from config import PROCESSED_DIR, DUPLICATES_DIR, REPORTS_DIR, REVIEW_DIR
 
 class Api:
     def __init__(self):
@@ -20,14 +20,14 @@ class Api:
         self.activity_log = []
         self.batch_total = 0
         self.batch_done = 0
+        self.current_image = None
 
     def start_batch(self):
         """Opens folder dialog, then kicks off processing in a background thread."""
         folder_paths = self.window.create_file_dialog(
             webview.FOLDER_DIALOG,
             allow_multiple=False,
-            directory='',
-            title='Select Folder Containing Receipts'
+            directory=''
         )
 
         if not folder_paths:
@@ -42,6 +42,7 @@ class Api:
         self.batch_total = len(images)
         self.batch_done = 0
         self.activity_log = []
+        self.current_image = None
         self.is_processing = True
 
         # Auto-navigate to the live processing dashboard
@@ -50,16 +51,26 @@ class Api:
         def ui_callback(result):
             """Called from the background thread after each receipt — thread-safe via evaluate_js."""
             self.batch_done += 1
-            self.activity_log.append(result)
+            
+            # Pop image_data out so we don't store 1000s of base64 images in memory history
+            result_log = result.copy()
+            self.current_image = result_log.pop('image_data', None)
+            self.activity_log.append(result_log)
+            
             if self.window:
-                json_str = json.dumps(result)
                 pct = round((self.batch_done / self.batch_total) * 100, 1) if self.batch_total else 0
-                progress_js = f'if(window.updateProgress) window.updateProgress({self.batch_done}, {self.batch_total}, {pct});'
-                log_js = f'if(window.addLogEntry) window.addLogEntry({json_str});'
-                activity_js = f'if(window.addActivityLog) window.addActivityLog({json_str});'
-                self.window.evaluate_js(progress_js)
-                self.window.evaluate_js(log_js)
-                self.window.evaluate_js(activity_js)
+                payload = {
+                    "done": self.batch_done,
+                    "total": self.batch_total,
+                    "pct": pct,
+                    "log": result_log,
+                    "image_data": self.current_image,
+                    "confidence": result_log.get('confidence', 0),
+                    "needs_review": len(list(REVIEW_DIR.glob("*.*")))
+                }
+                
+                json_str = json.dumps(payload)
+                self.window.evaluate_js(f'if(window.onReceiptProcessed) window.onReceiptProcessed({json_str});')
 
         def run_thread():
             main(ui_callback=ui_callback, source_dir=selected_folder)
@@ -74,8 +85,7 @@ class Api:
         """Opens a save dialog and copies the Excel report to the chosen path."""
         save_path = self.window.create_file_dialog(
             webview.SAVE_DIALOG,
-            save_filename='Receipts_Report.xlsx',
-            title='Export Excel Report'
+            save_filename='Receipts_Report.xlsx'
         )
 
         if save_path:
@@ -90,9 +100,11 @@ class Api:
         """Returns current file counts from the output directories."""
         processed = len(list(PROCESSED_DIR.rglob("*.*")))
         duplicates = len(list(DUPLICATES_DIR.glob("*.*")))
+        needs_review = len(list(REVIEW_DIR.glob("*.*")))
         return {
             "processed": processed,
-            "duplicates": duplicates
+            "duplicates": duplicates,
+            "needs_review": needs_review
         }
 
     def get_current_state(self):
@@ -101,7 +113,8 @@ class Api:
             "is_processing": self.is_processing,
             "batch_total": self.batch_total,
             "batch_done": self.batch_done,
-            "activity_log": self.activity_log
+            "activity_log": self.activity_log,
+            "current_image": self.current_image
         }
 
     def navigate(self, screen_folder):

@@ -156,7 +156,7 @@
 </div>
 </nav>
 <div class="px-md mt-auto">
-<button class="w-full bg-secondary-fixed text-on-secondary-fixed py-md font-label-bold text-label-bold uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-sm">
+<button onclick="pywebview.api.start_batch()" class="w-full bg-secondary-fixed text-on-secondary-fixed py-md font-label-bold text-label-bold uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-sm">
 <span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">add_circle</span>
                 New Batch
             </button>
@@ -173,6 +173,20 @@
 </header>
 <!-- Main Content Canvas -->
 <main class="ml-sidebar_width mt-16 p-lg h-[calc(100vh-64px)] flex flex-col gap-lg bg-background">
+<!-- Empty State -->
+<div id="empty-state" class="h-full flex flex-col items-center justify-center gap-md">
+    <div class="w-24 h-24 rounded-full bg-primary-container flex items-center justify-center mb-sm">
+        <span class="material-symbols-outlined text-4xl text-on-primary-container">inbox</span>
+    </div>
+    <h2 class="font-headline-md text-headline-md font-bold text-on-background">No Batch Active</h2>
+    <p class="font-body-md text-body-md text-on-surface-variant max-w-sm text-center">Start a new batch to see live processing logs and real-time extraction results.</p>
+    <button onclick="pywebview.api.start_batch()" class="mt-md bg-secondary-fixed text-on-secondary-fixed px-lg py-md font-label-bold text-label-bold uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-sm">
+        <span class="material-symbols-outlined">rocket_launch</span> Add Batch
+    </button>
+</div>
+
+<!-- Active State -->
+<div id="active-state" class="hidden h-full flex-col gap-lg">
 <!-- Top Batch Progress Bar -->
 <div class="bg-surface-container-lowest border border-outline-variant p-md flex flex-col gap-sm">
 <div class="flex justify-between items-end">
@@ -207,7 +221,7 @@
                         }
                     </style>
 <div class="w-[85%] h-[90%] bg-white shadow-2xl relative p-lg flex flex-col overflow-hidden">
-<img class="w-full h-auto object-contain filter grayscale-[0.2]" data-alt="A high-resolution scanning-style photograph of a crumpled paper receipt from a rural agricultural supply store. The receipt is illuminated with sharp, industrial office lighting, showing detailed texture, ink bleeds, and handwritten notes in the margins. The composition is a top-down view centered in the frame, surrounded by a subtle green OCR scanning glow effect to match the industrial AI theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmZYpxlavLURzTz2a_u0VktpZE1_tRS92DS-DZ8YFzZoW0OKpl_D4fQI_HY1gDyPV9qz8YJqjsGFOascvqnMLE4PJ1LnB-EsTlqLNFPLwYYjO1vY03irrx9998GRR7vrQpA4iD6jXoNPWLcFT48RT-0SIFJYDYwUAxw2hLcUDk53k6BGejXhopn1vzVE5LHpUwII7gt580XJfwF9tMWcR35pJX_yyP-ke3WefD7YJTERBpihnAXrF2ouPKidfVU7ZoJNkGgoqABg">
+<img id="receipt-preview" class="w-full h-auto object-contain filter grayscale-[0.2]" src="">
 <div class="absolute inset-0 bg-secondary/5 pointer-events-none"></div>
 </div>
 <!-- Floating Actions -->
@@ -233,14 +247,7 @@
 <span class="font-code-sm text-code-sm text-outline-variant">JSONL Stream</span>
 </div>
 <div class="flex-1 p-md font-code-sm text-code-sm text-inverse-on-surface overflow-y-auto custom-scrollbar whitespace-pre-wrap" id="log-container">
-<span class="text-secondary-fixed-dim">[INFO]</span> Initializing neural net for batch #882...
-                        <span class="text-secondary-fixed-dim">[DONE]</span> Loaded 1000 items from blob storage.
-                        <span class="text-secondary-fixed-dim">[PROC]</span> Item 980: OCR confidence 0.992. Extraction successful.
-                        <span class="text-secondary-fixed-dim">[PROC]</span> Item 981: OCR confidence 0.988. Data normalized.
-                        <span class="text-tertiary-fixed-dim">[WARN]</span> Item 982: Low light detected. Retrying with enhanced contrast...
-                        <span class="text-secondary-fixed-dim">[PROC]</span> Item 982: Confidence improved to 0.941. Mapping fields...
-                        <span class="text-secondary-fixed-dim animate-pulse-subtle">[PROC]</span> Streaming chunk index 44102...
-                    <div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Text extraction density 0.88...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Pushing results to ElasticSearch...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Fetching from queue...</div><div class="mt-1"><span class="text-tertiary-fixed-dim">[WARN]</span> Item 984: Rotation skew detected (+4.2deg). Correcting...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[DONE]</span> Skew corrected for 984.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 984: Confidence 0.991.</div><div class="mt-1"><span class="text-secondary-fixed-dim">[INFO]</span> Sanitizing raw image buffers...</div><div class="mt-1"><span class="text-secondary-fixed-dim">[PROC]</span> Item 983: Scanning region [33, 442, 102, 50]...</div></div>
+</div>
 </div>
 </div>
 <!-- Side Data Extraction Panel -->
@@ -255,42 +262,42 @@
 <div>
 <label class="block font-label-bold text-label-bold text-on-surface-variant mb-xs">Retailer</label>
 <div class="bg-surface-container-low border border-outline p-sm font-body-md text-on-surface flex justify-between items-center">
-                                AGRICO SUPPLY CO.
+                                <span id="panel-retailer">-</span>
                                 <span class="material-symbols-outlined text-secondary scale-75" style="font-variation-settings: &quot;FILL&quot; 1;">check_circle</span>
 </div>
 </div>
 <div class="grid grid-cols-2 gap-md">
 <div>
 <label class="block font-label-bold text-label-bold text-on-surface-variant mb-xs">Date</label>
-<div class="bg-surface-container-low border border-outline p-sm font-body-md text-on-surface">
-                                    2024-05-12
+<div id="panel-date" class="bg-surface-container-low border border-outline p-sm font-body-md text-on-surface">
+                                    -
                                 </div>
 </div>
 <div>
 <label class="block font-label-bold text-label-bold text-on-surface-variant mb-xs">Receipt No</label>
-<div class="bg-surface-container-low border border-outline p-sm font-body-md text-on-surface">
-                                    #TX-99021
+<div id="panel-receipt-no" class="bg-surface-container-low border border-outline p-sm font-body-md text-on-surface">
+                                    -
                                 </div>
 </div>
 </div>
 <div>
 <label class="block font-label-bold text-label-bold text-on-surface-variant mb-xs">Category</label>
 <div class="bg-surface-container-low border border-outline p-sm font-body-md text-on-surface flex justify-between items-center">
-                                Fertilizer &amp; Soil
+                                <span id="panel-category">-</span>
                                 <span class="material-symbols-outlined text-on-surface-variant scale-75">expand_more</span>
 </div>
 </div>
 <div class="grid grid-cols-2 gap-md">
 <div>
 <label class="block font-label-bold text-label-bold text-on-surface-variant mb-xs">Amount</label>
-<div class="bg-surface-container-low border border-outline p-sm font-body-md text-on-surface font-bold text-secondary">
-                                    1,420.00
+<div id="panel-amount" class="bg-surface-container-low border border-outline p-sm font-body-md text-on-surface font-bold text-secondary">
+                                    -
                                 </div>
 </div>
 <div>
 <label class="block font-label-bold text-label-bold text-on-surface-variant mb-xs">Currency</label>
-<div class="bg-surface-container-low border border-outline p-sm font-body-md text-on-surface">
-                                    USD
+<div id="panel-currency" class="bg-surface-container-low border border-outline p-sm font-body-md text-on-surface">
+                                    -
                                 </div>
 </div>
 </div>
@@ -305,8 +312,8 @@
 <circle cx="50" cy="50" fill="none" r="45" stroke="#0e6c4a" stroke-dasharray="282.7" stroke-dashoffset="16.9" stroke-linecap="round" stroke-width="10"></circle>
 </svg>
 <div class="absolute inset-0 flex flex-col items-center justify-center">
-<span class="text-headline-md font-bold text-primary">94%</span>
-<span class="text-[10px] text-on-surface-variant uppercase font-bold tracking-tighter">High Precision</span>
+<span id="panel-confidence" class="text-headline-md font-bold text-primary">0%</span>
+<span class="text-[10px] text-on-surface-variant uppercase font-bold tracking-tighter">Confidence</span>
 </div>
 </div>
 <p class="text-center font-body-sm text-body-sm text-on-surface-variant px-sm">Model version v4.1-Titan. Verification required for values below 85%.</p>
@@ -324,19 +331,34 @@
 </div>
 </div>
 </div>
+</div> <!-- active-state end -->
 </main>
 <!-- Contextual "Needs Review" Counter -->
 <div class="fixed bottom-lg right-lg z-50">
 <button class="bg-tertiary text-on-tertiary px-lg py-md flex items-center gap-md shadow-2xl hover:scale-105 transition-transform group">
 <span class="font-label-bold text-label-bold">PENDING REVIEW</span>
-<div class="bg-error text-white font-bold text-sm px-2 py-0.5 rounded-full group-hover:animate-bounce">12</div>
+<div id="pending-review-badge" class="bg-error text-white font-bold text-sm px-2 py-0.5 rounded-full group-hover:animate-bounce">0</div>
 <span class="material-symbols-outlined">arrow_forward</span>
 </button>
 </div>
 <script>
         const logContainer = document.getElementById('log-container');
+        const emptyState = document.getElementById('empty-state');
+        const activeState = document.getElementById('active-state');
+        const receiptPreview = document.getElementById('receipt-preview');
 
-        // Called from Python via evaluate_js for each receipt
+        function setProcessingState(isActive) {
+            if (isActive) {
+                emptyState.classList.add('hidden');
+                activeState.classList.remove('hidden');
+                activeState.classList.add('flex');
+            } else {
+                emptyState.classList.remove('hidden');
+                activeState.classList.add('hidden');
+                activeState.classList.remove('flex');
+            }
+        }
+
         window.updateProgress = function(done, total, pct) {
             const countEl = document.querySelector('[data-progress-count]');
             const barEl = document.querySelector('[data-progress-bar]');
@@ -350,7 +372,7 @@
             div.className = 'mt-1';
             const tag = log.status === 'needs_review' ? 'WARN' : log.status === 'duplicate' ? 'SKIP' : 'DONE';
             const color = tag === 'WARN' ? 'text-tertiary-fixed-dim' : 'text-secondary-fixed-dim';
-            div.innerHTML = `<span class="${color}">[${tag}]</span> ${log.filename}: ${log.status} — ${log.vendor || '-'} — ${log.amount || '-'}`;
+            div.innerHTML = `<span class="${color}">[${tag}]</span> ${log.filename}: ${log.status} &mdash; ${log.vendor || '-'} &mdash; ${log.amount || '-'}`;
             logContainer.appendChild(div);
             logContainer.scrollTop = logContainer.scrollHeight;
         };
@@ -362,25 +384,71 @@
             logContainer.appendChild(div);
             logContainer.scrollTop = logContainer.scrollHeight;
         };
+        
+        window.onReceiptProcessed = function(payload) {
+            setProcessingState(true);
+            window.updateProgress(payload.done, payload.total, payload.pct);
+            window.addLogEntry(payload.log);
+            
+            if (payload.image_data) {
+                receiptPreview.src = payload.image_data;
+            }
+            
+            // Update side panel
+            document.getElementById('panel-retailer').innerText = payload.log.vendor || '-';
+            document.getElementById('panel-date').innerText = payload.log.date || '-';
+            document.getElementById('panel-receipt-no').innerText = payload.log.receipt_number || '-';
+            document.getElementById('panel-category').innerText = payload.log.category || '-';
+            document.getElementById('panel-amount').innerText = payload.log.amount || '-';
+            
+            const conf = Math.round((payload.confidence || 0) * 100);
+            document.getElementById('panel-confidence').innerText = conf + '%';
+            
+            // Update Review Counter
+            document.getElementById('pending-review-badge').innerText = payload.needs_review || 0;
+        };
 
-        // Hydrate on load: pull current state from Python so navigating here mid-batch works
+        // Hydrate on load
         window.addEventListener('pywebviewready', function() {
             pywebview.api.get_current_state().then(function(state) {
-                if (state.batch_total > 0) {
+                if (state.batch_total > 0 || state.is_processing) {
+                    setProcessingState(true);
                     const pct = state.batch_total ? Math.round((state.batch_done / state.batch_total) * 100 * 10) / 10 : 0;
                     window.updateProgress(state.batch_done, state.batch_total, pct);
+                    
+                    if (state.current_image) {
+                        receiptPreview.src = state.current_image;
+                    }
+                    
+                    // Replay log entries
+                    if (state.activity_log && state.activity_log.length > 0) {
+                        logContainer.innerHTML = '';
+                        state.activity_log.forEach(function(log) {
+                            window.addLogEntry(log);
+                        });
+                        
+                        // Populate side panel with the latest log
+                        const lastLog = state.activity_log[state.activity_log.length - 1];
+                        document.getElementById('panel-retailer').innerText = lastLog.vendor || '-';
+                        document.getElementById('panel-date').innerText = lastLog.date || '-';
+                        document.getElementById('panel-receipt-no').innerText = lastLog.receipt_number || '-';
+                        document.getElementById('panel-category').innerText = lastLog.category || '-';
+                        document.getElementById('panel-amount').innerText = lastLog.amount || '-';
+                        const conf = Math.round((lastLog.confidence || 0) * 100);
+                        document.getElementById('panel-confidence').innerText = conf + '%';
+                    }
+                    
+                    if (!state.is_processing && state.batch_done > 0) {
+                        window.onBatchComplete();
+                    }
+                } else {
+                    setProcessingState(false);
                 }
-                // Replay log entries
-                if (state.activity_log && state.activity_log.length > 0) {
-                    // Clear demo content
-                    logContainer.innerHTML = '';
-                    state.activity_log.forEach(function(log) {
-                        window.addLogEntry(log);
-                    });
-                }
-                if (!state.is_processing && state.batch_done > 0) {
-                    window.onBatchComplete();
-                }
+                
+                // Fetch stats to update counter
+                pywebview.api.get_stats().then(function(stats) {
+                    document.getElementById('pending-review-badge').innerText = stats.needs_review || 0;
+                });
             });
         });
     </script>
