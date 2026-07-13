@@ -1,0 +1,581 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Needs Review | AgriProcess AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c1c8c2;
+            border-radius: 10px;
+        }
+        .receipt-zoom:hover {
+            cursor: zoom-in;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#dee0ff",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#ececff",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#2b2f48",
+                        "background": "#fbf8ff",
+                        "on-tertiary-fixed-variant": "#673a39",
+                        "on-secondary-fixed": "#002113",
+                        "primary-container": "#1b4332",
+                        "primary": "#012d1d",
+                        "secondary-fixed": "#a0f4c8",
+                        "secondary-container": "#a0f4c8",
+                        "on-primary-fixed-variant": "#274e3d",
+                        "primary-fixed-dim": "#a5d0b9",
+                        "on-tertiary-fixed": "#331111",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#a5d0b9",
+                        "on-surface-variant": "#414844",
+                        "surface-container-highest": "#dee0ff",
+                        "surface-dim": "#d5d8f9",
+                        "tertiary": "#401b1b",
+                        "outline": "#717973",
+                        "surface-container-high": "#e5e6ff",
+                        "on-background": "#161a32",
+                        "on-tertiary-container": "#d29895",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#85d7ad",
+                        "inverse-on-surface": "#f0efff",
+                        "primary-fixed": "#c1ecd4",
+                        "secondary": "#0e6c4a",
+                        "surface-tint": "#3f6653",
+                        "tertiary-container": "#5a302f",
+                        "on-secondary-container": "#19724f",
+                        "surface-container-low": "#f4f2ff",
+                        "on-surface": "#161a32",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#002114",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#86af99",
+                        "on-secondary-fixed-variant": "#005236",
+                        "tertiary-fixed-dim": "#f5b7b4",
+                        "surface": "#fbf8ff",
+                        "tertiary-fixed": "#ffdad8",
+                        "outline-variant": "#c1c8c2",
+                        "surface-bright": "#fbf8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "gutter": "16px",
+                        "sidebar_width": "260px",
+                        "unit": "4px",
+                        "xl": "32px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "table-data": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "code-sm": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "table-data": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "code-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-surface overflow-hidden">
+<!-- SideNavBar (Shared Component) -->
+<nav class="flex-1 space-y-xs px-sm">
+<!-- Active: Dashboard -->
+<div onclick="pywebview.api.navigate('system_overview')" class="relative group cursor-pointer active:scale-95 transition-all border-l-2 border-secondary-fixed bg-primary-container text-on-primary-fixed font-semibold px-md py-sm flex items-center gap-md">
+<span class="material-symbols-outlined text-secondary-fixed">dashboard</span>
+<span class="font-label-bold text-label-bold uppercase tracking-wider">Dashboard</span>
+</div>
+<div onclick="pywebview.api.navigate('live_processing_dashboard')" class="group cursor-pointer active:scale-95 transition-all text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/50 px-md py-sm flex items-center gap-md">
+<span class="material-symbols-outlined">memory</span>
+<span class="font-label-bold text-label-bold uppercase tracking-wider">Processing</span>
+</div>
+<div onclick="pywebview.api.navigate('agricultural_industrial')" class="group cursor-pointer active:scale-95 transition-all text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/50 px-md py-sm flex items-center gap-md">
+<span class="material-symbols-outlined">folder</span>
+<span class="font-label-bold text-label-bold uppercase tracking-wider">Folders</span>
+</div>
+<div onclick="pywebview.api.navigate('detailed_activity_logs')" class="group cursor-pointer active:scale-95 transition-all text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/50 px-md py-sm flex items-center gap-md">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-bold text-label-bold uppercase tracking-wider">Reports</span>
+</div>
+<div onclick="pywebview.api.navigate('needs_review_queue')" class="group cursor-pointer active:scale-95 transition-all text-on-primary opacity-80 hover:opacity-100 hover:bg-primary-container/50 px-md py-sm flex items-center gap-md">
+<span class="material-symbols-outlined">terminal</span>
+<span class="font-label-bold text-label-bold uppercase tracking-wider">Logs</span>
+</div>
+</nav>
+<!-- TopNavBar (Shared Component) -->
+<header class="h-16 fixed top-0 right-0 left-sidebar_width z-40 bg-surface border-b border-outline-variant flex justify-between items-center px-lg ml-sidebar_width">
+<div class="flex items-center gap-xl">
+
+<div class="flex gap-lg">
+<div class="flex items-center gap-xs">
+
+</div>
+<div class="flex items-center gap-xs">
+
+</div>
+<div class="flex items-center gap-xs">
+
+</div>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-sm mr-lg">
+<button class="p-sm hover:bg-surface-container-low transition-all material-symbols-outlined text-on-surface-variant">notifications</button>
+
+
+</div>
+<div class="flex items-center gap-sm">
+<div class="text-right">
+
+
+</div>
+<div class="w-10 h-10 rounded bg-primary-fixed flex items-center justify-center overflow-hidden">
+
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-sidebar_width mt-16 h-[calc(100vh-64px)] flex">
+<!-- Queue Sidebar -->
+<aside class="w-80 h-full bg-surface-container-lowest border-r border-outline-variant flex flex-col overflow-hidden">
+<div class="p-md border-b border-outline-variant bg-surface-bright flex justify-between items-center">
+<h3 class="font-label-bold text-label-bold text-on-surface uppercase tracking-wider">Review Queue (11)</h3>
+<span class="material-symbols-outlined text-on-surface-variant text-sm cursor-pointer">sort</span>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar bg-surface-container-low/30">
+<!-- Queue Items -->
+<div class="p-md bg-secondary-container/30 border-l-4 border-secondary flex flex-col gap-xs cursor-pointer">
+<div class="flex justify-between items-center">
+<span class="font-code-sm text-code-sm text-secondary font-bold">#RX-4091</span>
+<span class="font-label-bold text-[10px] text-error font-bold">CRITICAL</span>
+</div>
+<p class="font-body-md text-body-md font-semibold text-on-surface truncate">Midwest Fertilizer Co.</p>
+<p class="text-[11px] text-on-surface-variant">2 minutes ago • 1 Flag</p>
+</div>
+<!-- Remaining 10 items mock -->
+<script>
+                    const names = ["Seed & Sower Depot", "Hydro-Grow Systems", "AgriCorp Logistics", "Southern Soil Dist.", "Precision Parts Ltd", "Prairie Fuel Center", "Global Grain Services", "FarmTech Solutions", "Verdant Valley Co.", "Iron Horse Repair"];
+                    const queueContainer = document.currentScript.parentElement;
+                    names.forEach((name, i) => {
+                        const item = document.createElement('div');
+                        item.className = "p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs";
+                        item.innerHTML = `
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-40${80-i}</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">${name}</p>
+                            <p class="text-[11px] text-on-surface-variant">${(i+1)*5} minutes ago</p>
+                        `;
+                        queueContainer.appendChild(item);
+                    });
+                </script><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4080</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">Seed &amp; Sower Depot</p>
+                            <p class="text-[11px] text-on-surface-variant">5 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4079</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">Hydro-Grow Systems</p>
+                            <p class="text-[11px] text-on-surface-variant">10 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4078</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">AgriCorp Logistics</p>
+                            <p class="text-[11px] text-on-surface-variant">15 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4077</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">Southern Soil Dist.</p>
+                            <p class="text-[11px] text-on-surface-variant">20 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4076</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">Precision Parts Ltd</p>
+                            <p class="text-[11px] text-on-surface-variant">25 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4075</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">Prairie Fuel Center</p>
+                            <p class="text-[11px] text-on-surface-variant">30 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4074</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">Global Grain Services</p>
+                            <p class="text-[11px] text-on-surface-variant">35 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4073</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">FarmTech Solutions</p>
+                            <p class="text-[11px] text-on-surface-variant">40 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4072</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">Verdant Valley Co.</p>
+                            <p class="text-[11px] text-on-surface-variant">45 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4071</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">Iron Horse Repair</p>
+                            <p class="text-[11px] text-on-surface-variant">50 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4080</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">Seed &amp; Sower Depot</p>
+                            <p class="text-[11px] text-on-surface-variant">5 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4079</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">Hydro-Grow Systems</p>
+                            <p class="text-[11px] text-on-surface-variant">10 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4078</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">AgriCorp Logistics</p>
+                            <p class="text-[11px] text-on-surface-variant">15 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4077</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">Southern Soil Dist.</p>
+                            <p class="text-[11px] text-on-surface-variant">20 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4076</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">Precision Parts Ltd</p>
+                            <p class="text-[11px] text-on-surface-variant">25 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4075</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">Prairie Fuel Center</p>
+                            <p class="text-[11px] text-on-surface-variant">30 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4074</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">Global Grain Services</p>
+                            <p class="text-[11px] text-on-surface-variant">35 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4073</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">FarmTech Solutions</p>
+                            <p class="text-[11px] text-on-surface-variant">40 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4072</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">Verdant Valley Co.</p>
+                            <p class="text-[11px] text-on-surface-variant">45 minutes ago</p>
+                        </div><div class="p-md border-b border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group flex flex-col gap-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-code-sm text-code-sm text-on-surface-variant">#RX-4071</span>
+                                <span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+                            </div>
+                            <p class="font-body-md text-body-md text-on-surface truncate">Iron Horse Repair</p>
+                            <p class="text-[11px] text-on-surface-variant">50 minutes ago</p>
+                        </div>
+</div>
+</aside>
+<!-- Main Workspace -->
+<div class="flex-1 flex flex-col h-full overflow-hidden">
+<!-- Context Header -->
+<div class="px-lg py-md border-b border-outline-variant bg-surface flex justify-between items-center">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-primary-container rounded flex items-center justify-center text-on-primary-fixed">
+<span class="material-symbols-outlined">receipt_long</span>
+</div>
+<div>
+<div class="flex items-center gap-sm">
+<h4 class="font-headline-sm text-headline-sm font-bold">#RX-4091: Midwest Fertilizer Co.</h4>
+<span class="px-sm py-xs bg-error-container text-on-error-container text-[10px] font-bold rounded uppercase">Action Required</span>
+</div>
+<p class="text-body-sm text-on-surface-variant">Source: Mobile Upload (Terminal 4) • Batch: #2024-05-12-A</p>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+
+
+</div>
+</div>
+<!-- Editor / Viewer Split Screen -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Left Side: Receipt Image -->
+<div class="flex-1 bg-surface-variant/20 relative overflow-hidden flex flex-col">
+<div class="absolute top-md left-md z-10 flex gap-xs">
+<button class="p-sm bg-surface shadow-sm hover:bg-surface-container-high rounded material-symbols-outlined">zoom_in</button>
+<button class="p-sm bg-surface shadow-sm hover:bg-surface-container-high rounded material-symbols-outlined">zoom_out</button>
+<button class="p-sm bg-surface shadow-sm hover:bg-surface-container-high rounded material-symbols-outlined">rotate_right</button>
+<button class="p-sm bg-surface shadow-sm hover:bg-surface-container-high rounded material-symbols-outlined">fullscreen</button>
+</div>
+<div class="flex-1 flex items-center justify-center p-xl overflow-auto custom-scrollbar">
+<div class="relative max-w-lg w-full bg-white shadow-xl p-md border border-outline-variant receipt-zoom transition-transform duration-300" style="transform: scale(1.2);">
+<!-- Simulated Receipt Content -->
+<div class="space-y-sm text-on-surface opacity-90">
+<div class="text-center pb-md border-b border-dashed border-outline-variant">
+<h5 class="font-bold">MIDWEST FERTILIZER CO.</h5>
+<p class="text-[10px]">1290 AGRI-HUB WAY, AMES, IA 50010</p>
+<p class="text-[10px]">TEL: (515) 555-0199</p>
+</div>
+<div class="py-sm font-code-sm text-code-sm flex justify-between">
+<span class="">ORDER #98221</span>
+<span class="">05/12/2024</span>
+</div>
+<div class="space-y-xs py-sm border-b border-dashed border-outline-variant">
+<div class="flex justify-between">
+<span class="">Liquid Nitrogen (250 Gal)</span>
+<span class="">$3,420.00</span>
+</div>
+<div class="flex justify-between">
+<span class="">Potash (Bulk/Ton)</span>
+<span class="">$1,210.50</span>
+</div>
+<div class="flex justify-between">
+<span class="">Delivery Charge</span>
+<span class="">$125.00</span>
+</div>
+</div>
+<!-- Obscured Area Mockup -->
+<div class="relative">
+<div class="flex justify-between font-bold py-md">
+<span class="">TOTAL DUE</span>
+<span class="">$4,755.50</span>
+</div>
+<div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-black/10 to-white/0 opacity-50 mix-blend-multiply pointer-events-none"></div>
+<!-- Issue Highlight Red Box -->
+<div class="absolute -top-1 -right-1 w-24 h-12 border-2 border-error border-dashed pointer-events-none animate-pulse"></div>
+</div>
+<div class="text-[10px] pt-md opacity-60">
+<p class="">TRANS ID: 88220011-B</p>
+<p class="">THANK YOU FOR YOUR BUSINESS</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Issue Indicator -->
+<div class="p-lg">
+<div class="bg-error/5 border border-error p-md rounded flex items-start gap-md">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: &quot;FILL&quot; 1;">warning</span>
+<div>
+<p class="font-label-bold text-label-bold text-error uppercase tracking-wider">Detection Issues (1)</p>
+<p class="font-body-md text-body-md text-on-error-container mt-xs">Date partly obscured: Optical character recognition (OCR) confidence low on transaction timestamp. Possible coffee stain artifact detected.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Side: Extraction Form -->
+<div class="w-[480px] bg-white border-l border-outline-variant h-full flex flex-col shadow-inner">
+<div class="p-lg border-b border-outline-variant bg-surface-container-low/50">
+<h5 class="font-label-bold text-label-bold uppercase text-on-surface-variant">Extracted Data Points</h5>
+<p class="text-body-sm text-on-surface-variant">Fields with low confidence are highlighted.</p>
+</div>
+<div class="flex-1 overflow-y-auto p-lg custom-scrollbar">
+<form class="space-y-lg">
+<div class="space-y-xs">
+<label class="font-label-bold text-label-bold text-on-surface-variant flex justify-between">
+                                    VENDOR NAME
+                                    <span class="text-secondary font-bold">98% Match</span>
+</label>
+<input class="w-full h-10 px-md border-outline-variant border rounded focus:border-primary focus:ring-1 focus:ring-primary font-body-md transition-all" type="text" value="Midwest Fertilizer Co.">
+</div>
+<div class="space-y-xs">
+<label class="font-label-bold text-label-bold text-error flex justify-between">
+                                    TRANSACTION DATE
+                                    <span class="font-bold">LOW CONFIDENCE</span>
+</label>
+<div class="relative">
+<input class="w-full h-10 px-md border-error bg-error/5 border-2 rounded focus:ring-1 focus:ring-error font-body-md transition-all" type="text" value="05/12/2024">
+<span class="material-symbols-outlined absolute right-3 top-2 text-error text-sm">edit</span>
+</div>
+<p class="text-[11px] text-error">OCR identified "05/12/2024" but visual alignment check failed.</p>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="space-y-xs">
+<label class="font-label-bold text-label-bold text-on-surface-variant">TAX ID</label>
+<input class="w-full h-10 px-md border-outline-variant border rounded focus:border-primary font-code-sm" type="text" value="88-220011-B">
+</div>
+<div class="space-y-xs">
+<label class="font-label-bold text-label-bold text-on-surface-variant">CURRENCY</label>
+<select class="w-full h-10 px-md border-outline-variant border rounded focus:border-primary font-body-md">
+<option>USD ($)</option>
+<option>CAD (C$)</option>
+<option>EUR (€)</option>
+</select>
+</div>
+</div>
+<div class="space-y-xs">
+<label class="font-label-bold text-label-bold text-on-surface-variant">TOTAL AMOUNT</label>
+<input class="w-full h-10 px-md border-outline-variant border rounded focus:border-primary font-bold text-lg font-code-sm" type="text" value="4,755.50">
+</div>
+<div class="space-y-sm pt-md border-t border-outline-variant">
+<h6 class="font-label-bold text-label-bold text-on-surface-variant">LINE ITEMS (3)</h6>
+<div class="space-y-xs">
+<div class="bg-surface-container-low p-sm flex justify-between items-center rounded border border-outline-variant">
+<span class="font-body-sm">Liquid Nitrogen (250 Gal)</span>
+<span class="font-code-sm font-bold">$3,420.00</span>
+</div>
+<div class="bg-surface-container-low p-sm flex justify-between items-center rounded border border-outline-variant">
+<span class="font-body-sm">Potash (Bulk/Ton)</span>
+<span class="font-code-sm font-bold">$1,210.50</span>
+</div>
+<div class="bg-surface-container-low p-sm flex justify-between items-center rounded border border-outline-variant">
+<span class="font-body-sm">Delivery Charge</span>
+<span class="font-code-sm font-bold">$125.00</span>
+</div>
+</div>
+<button class="text-secondary font-label-bold text-label-bold flex items-center gap-xs hover:underline pt-xs" type="button">
+<span class="material-symbols-outlined text-sm">add_circle</span>
+                                    Add Manual Entry
+                                </button>
+</div>
+<div class="space-y-xs pt-lg">
+<label class="font-label-bold text-label-bold text-on-surface-variant">VALIDATION NOTES</label>
+<textarea class="w-full p-md border-outline-variant border rounded focus:border-primary font-body-sm min-h-[80px]" placeholder="Add internal processing comments..."></textarea>
+</div>
+</form>
+</div>
+<!-- Sticky Action Bar -->
+<div class="p-lg bg-surface border-t border-outline-variant flex flex-col gap-md">
+<div class="grid grid-cols-2 gap-sm">
+<button class="w-full h-12 bg-primary text-on-primary font-bold rounded flex items-center justify-center gap-sm hover:bg-primary-container transition-colors active:scale-95 transition-transform">
+<span class="material-symbols-outlined">check_circle</span>
+                                Approve
+                            </button>
+<button class="w-full h-12 border-2 border-secondary text-secondary font-bold rounded flex items-center justify-center gap-sm hover:bg-secondary/5 transition-colors active:scale-95 transition-transform">
+<span class="material-symbols-outlined">edit_square</span>
+                                Edit &amp; Approve
+                            </button>
+</div>
+<div class="grid grid-cols-2 gap-sm">
+<button class="w-full h-10 bg-surface-container-high text-on-surface-variant font-bold rounded flex items-center justify-center gap-sm hover:bg-error/10 hover:text-error transition-colors active:scale-95 transition-transform">
+<span class="material-symbols-outlined">delete</span>
+                                Discard (Duplicate)
+                            </button>
+<button class="w-full h-10 border border-outline-variant text-on-surface-variant font-bold rounded flex items-center justify-center gap-sm hover:bg-surface-container-low transition-colors active:scale-95 transition-transform">
+<span class="material-symbols-outlined">skip_next</span>
+                                Skip
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Hotkey Tooltip (Floating) -->
+<div class="fixed bottom-lg right-lg bg-inverse-surface text-inverse-on-surface px-md py-sm rounded-full flex items-center gap-md shadow-lg pointer-events-none opacity-80 border border-outline-variant">
+<div class="flex items-center gap-xs">
+<span class="px-xs py-[2px] bg-white/10 rounded font-code-sm text-code-sm border border-white/20">⌘</span>
+<span class="px-xs py-[2px] bg-white/10 rounded font-code-sm text-code-sm border border-white/20">S</span>
+<span class="text-xs">Save &amp; Next</span>
+</div>
+<div class="w-px h-4 bg-white/20"></div>
+<div class="flex items-center gap-xs">
+<span class="px-xs py-[2px] bg-white/10 rounded font-code-sm text-code-sm border border-white/20">ESC</span>
+<span class="text-xs">Close Review</span>
+</div>
+</div>
+<script>
+        // Simple micro-interaction for receipt zoom
+        const receipt = document.querySelector('.receipt-zoom');
+        let isZoomed = false;
+        receipt.addEventListener('click', () => {
+            isZoomed = !isZoomed;
+            receipt.style.transform = isZoomed ? 'scale(1.2)' : 'scale(1)';
+        });
+
+        // Form field focus highlights
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.querySelector('label')?.classList.add('text-primary');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.querySelector('label')?.classList.remove('text-primary');
+            });
+        });
+    </script>
+
+
+
+
+</body></html>

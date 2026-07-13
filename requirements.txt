@@ -1,0 +1,9 @@
+google-generativeai
+pandas
+openpyxl
+Pillow
+imagehash
+python-dateutil
+tqdm
+pywebview
+pyinstaller

@@ -1,0 +1,102 @@
+import sys
+from pathlib import Path
+from tqdm import tqdm
+
+from config import init_directories, RAW_DIR
+from ai import process_receipt_ai
+from validate import validate_receipt_data
+from rename import generate_filename
+from excel import append_to_excel
+from dedupe import is_duplicate
+from organize import log_event, move_to_processed, move_to_review, move_to_duplicates, archive_original
+
+# Cache for deduplication
+processed_records = []
+
+def process_single_receipt(image_path):
+    log_event({"file": image_path.name, "status": "started"})
+    
+    # Secure an untouched copy to the archive first
+    archive_original(image_path)
+    
+    # First pass: Flash
+    raw_data, error = process_receipt_ai(image_path)
+    
+    if error:
+        log_event({"file": image_path.name, "status": "needs_review", "reason": f"API error: {error}"})
+        move_to_review(image_path)
+        return {"filename": image_path.name, "status": "needs_review", "category": "Error", "vendor": "-", "amount": "-"}
+            
+    is_valid, metadata, reason = validate_receipt_data(raw_data)
+        
+    # Deduplication check
+    is_dup, record = is_duplicate(image_path, metadata, processed_records)
+    if is_dup:
+        log_event({"file": image_path.name, "status": "duplicate", "matched_record": record.get('receipt_number')})
+        move_to_duplicates(image_path)
+        return {"filename": image_path.name, "status": "duplicate", "category": "Duplicate", "vendor": "-", "amount": "-"}
+        
+    # Generate filename
+    new_filename = generate_filename(metadata, image_path.suffix)
+    
+    # Organize and Excel
+    if is_valid:
+        move_to_processed(image_path, metadata.get('category', 'Other'), new_filename)
+        append_to_excel(metadata, new_filename, flagged=False)
+        log_event({"file": image_path.name, "status": "processed", "category": metadata.get('category'), "confidence": metadata.get('confidence')})
+    else:
+        move_to_review(image_path, new_filename)
+        append_to_excel(metadata, new_filename, flagged=True)
+        log_event({"file": image_path.name, "status": "needs_review", "reason": reason})
+        
+    # Update hash records
+    _, img_hash = is_duplicate(image_path, metadata, []) # Just getting the hash
+    if img_hash is not None:
+        processed_records.append({
+            'hash': img_hash,
+            'date': metadata.get('date'),
+            'amount': metadata.get('amount'),
+            'receipt_number': metadata.get('receipt_number')
+        })
+        
+    return {
+        "filename": image_path.name, 
+        "status": "processed" if is_valid else "needs_review",
+        "category": metadata.get('category', 'Other'),
+        "vendor": metadata.get('retailer', '-'),
+        "amount": metadata.get('amount', '-')
+    }
+
+def main(ui_callback=None, source_dir=None):
+    from config import RAW_DIR
+    print("Initializing directories...")
+    init_directories()
+    
+    target_dir = Path(source_dir) if source_dir else RAW_DIR
+    
+    images = list(target_dir.glob("*.png")) + list(target_dir.glob("*.jpg")) + list(target_dir.glob("*.jpeg"))
+    
+    if not images:
+        print(f"No images found in {target_dir}")
+        return
+        
+    print(f"Found {len(images)} receipts to process.")
+    
+    stats = {"processed": 0, "needs_review": 0, "duplicates": 0, "errors": 0}
+    
+    for image_path in (tqdm(images, desc="Processing Receipts") if not ui_callback else images):
+        try:
+            result = process_single_receipt(image_path)
+            if ui_callback:
+                ui_callback(result)
+        except Exception as e:
+            print(f"Error processing {image_path.name}: {e}")
+            log_event({"file": image_path.name, "status": "error", "reason": str(e)})
+            stats["errors"] += 1
+            if ui_callback:
+                ui_callback({"filename": image_path.name, "status": "needs_review", "category": "Error", "vendor": "-", "amount": "-"})
+            
+    print("Processing complete.")
+
+if __name__ == "__main__":
+    main()
