@@ -117,9 +117,11 @@ def on_closing():
 
 
 if __name__ == '__main__':
-    # Redirect stdout/stderr so print() calls don't crash --noconsole mode
-    sys.stdout = io.StringIO()
-    sys.stderr = io.StringIO()
+    # Only redirect when genuinely headless (PyInstaller --noconsole sets these to None)
+    if sys.stdout is None:
+        sys.stdout = io.StringIO()
+    if sys.stderr is None:
+        sys.stderr = io.StringIO()
 
     api = Api()
 
