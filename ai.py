@@ -66,6 +66,11 @@ def call_gemini(image_path, model_name="gemini-1.5-flash", retries=3):
                 
         except Exception as e:
             err_msg = str(e)
+            
+            # Fail fast for auth/API key errors, no point in retrying
+            if "API_KEY" in err_msg or "ADC found" in err_msg or "401" in err_msg or "403" in err_msg:
+                return None, f"Authentication error: {err_msg}"
+                
             if attempt < retries - 1:
                 time.sleep(backoffs[attempt])
             else:
