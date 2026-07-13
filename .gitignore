@@ -21,3 +21,5 @@ duplicates/
 review/
 raw/
 archive/
+
+.env

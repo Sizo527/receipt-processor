@@ -8,6 +8,15 @@ from PIL import Image
 def get_gemini_client():
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
+        # Fallback to local .env
+        env_file = os.path.join(os.path.dirname(__file__), '.env')
+        if os.path.exists(env_file):
+            with open(env_file, 'r') as f:
+                for line in f:
+                    if line.startswith('GEMINI_API_KEY='):
+                        api_key = line.split('=', 1)[1].strip().strip('"\'')
+                        break
+    if not api_key:
         raise ValueError("GEMINI_API_KEY environment variable not set")
     genai.configure(api_key=api_key)
 
