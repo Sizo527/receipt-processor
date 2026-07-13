@@ -29,7 +29,7 @@ except ValueError:
 PROMPT = """You are reading fiscal receipts for a farming operation in Zimbabwe.
 
 Extract the following fields and return them as a JSON object using exactly these keys:
-- "date" (YYYY-MM-DD format if possible)
+- "date" (YYYY-MM-DD format. IMPORTANT: Receipts in Zimbabwe use DD-MM-YYYY or YYYY-MM-DD, NEVER MM-DD-YYYY. Please interpret ambiguous dates correctly.)
 - "retailer" (name of the store/vendor)
 - "category" (must be one of the possible categories below. Note: classify Fuel under "Transportation")
 - "amount" (numeric total amount)
@@ -66,7 +66,9 @@ def call_gemini(image_path, model_name="gemini-1.5-flash", retries=3):
                     }
                 )
             
-            raw_text = response.text
+            raw_text = response.text.strip()
+            if not raw_text.endswith('}'):
+                raw_text += '}'
             
             try:
                 data = json.loads(raw_text)
