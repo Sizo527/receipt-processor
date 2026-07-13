@@ -43,6 +43,7 @@ def call_gemini(image_path, model_name="gemini-1.5-flash", retries=3):
     for attempt in range(retries):
         try:
             with Image.open(image_path) as img:
+                img.thumbnail((1500, 1500))
                 response = model.generate_content(
                     [PROMPT, img],
                     generation_config=genai.types.GenerationConfig(
