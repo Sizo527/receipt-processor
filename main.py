@@ -22,8 +22,11 @@ def process_single_receipt(image_path):
     # Secure an untouched copy to the archive first
     archive_original(image_path)
     
-    # First pass: Flash
-    raw_data, error = process_receipt_ai(image_path)
+    # First pass: AI
+    raw_data, error, quota_exhausted = process_receipt_ai(image_path)
+    
+    if quota_exhausted:
+        return {"filename": image_path.name, "status": "quota_exhausted"}
     
     if error:
         log_event({"file": image_path.name, "status": "needs_review", "reason": f"API error: {error}"})
@@ -112,9 +115,23 @@ def main(ui_callback=None, source_dir=None):
     
     stats = {"processed": 0, "needs_review": 0, "duplicates": 0, "errors": 0}
     
-    for image_path in (tqdm(images, desc="Processing Receipts") if not ui_callback else images):
+    for idx, image_path in enumerate(tqdm(images, desc="Processing Receipts") if not ui_callback else images):
         try:
             result = process_single_receipt(image_path)
+            
+            if result.get("status") == "quota_exhausted":
+                remaining = len(images) - idx
+                log_event({
+                    "status": "batch_halted", 
+                    "reason": "daily_quota_exhausted", 
+                    "processed_today": idx, 
+                    "remaining_in_raw": remaining
+                })
+                print(f"\n[HALTED] Daily quota exhausted.")
+                print(f"Processed today: {idx} | Remaining in raw: {remaining}")
+                print("The daily quota resets at midnight Pacific time. Run the script again tomorrow to continue processing.")
+                return
+                
             if ui_callback:
                 ui_callback(result)
         except Exception as e:

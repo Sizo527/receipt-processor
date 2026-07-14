@@ -79,29 +79,33 @@ def call_gemini(image_path, model_name="gemini-1.5-flash", retries=3):
                     
             try:
                 data = json.loads(raw_text)
-                return data, None
+                return data, None, False
             except json.JSONDecodeError:
-                return None, f"Failed to parse JSON: {raw_text}"
+                return None, f"Failed to parse JSON: {raw_text}", False
                 
         except Exception as e:
             err_msg = str(e)
             
+            # Detect daily quota exhaustion
+            if "429" in err_msg and ("PerDay" in err_msg or "GenerateRequestsPerDayPerProjectPerModel" in err_msg):
+                return None, f"Daily quota exhausted: {err_msg}", True
+            
             # Fail fast for auth/API key errors, no point in retrying
             if "API_KEY" in err_msg or "ADC found" in err_msg or "401" in err_msg or "403" in err_msg:
-                return None, f"Authentication error: {err_msg}"
+                return None, f"Authentication error: {err_msg}", False
                 
             if attempt < retries - 1:
                 time.sleep(backoffs[attempt])
             else:
-                return None, f"API failed after {retries} attempts. Last error: {err_msg}"
+                return None, f"API failed after {retries} attempts. Last error: {err_msg}", False
                 
-    return None, "Unknown failure"
+    return None, "Unknown failure", False
 
 def process_receipt_ai(image_path, escalate_to_pro=False):
     """
-    Calls Flash first. If escalation is requested, calls Pro.
+    Calls Flash Lite first. If escalation is requested, calls Pro.
     """
     if not escalate_to_pro:
-        return call_gemini(image_path, model_name="gemini-3.5-flash")
+        return call_gemini(image_path, model_name="gemini-3.1-flash-lite")
     else:
         return call_gemini(image_path, model_name="gemini-2.5-pro")
