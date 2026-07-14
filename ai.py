@@ -41,6 +41,7 @@ Extract the following fields and return them as a JSON object using exactly thes
 Possible categories:
 Feed Cost, Veterinary Care, Husbandry Fees, Transportation, Land Rent, Infrastructure, Equipment and Maintenance, Labour Cost, Vehicles, Utilities, Crop & Soil Inputs, Other
 
+IMPORTANT: If this image contains multiple receipts or line items, return a JSON array of objects. If it contains a single receipt, return a single JSON object.
 Return ONLY valid JSON, no other text.
 """
 
@@ -79,8 +80,24 @@ def call_gemini(image_path, model_name="gemini-1.5-flash", retries=3):
                     
             try:
                 data = json.loads(raw_text)
+                
+                # If the prompt explicitly returned an array, handle it
+                if isinstance(data, list) and len(data) > 0:
+                    first_item = data[0]
+                    first_item.setdefault('issues', []).append("Multiple items detected on one scan")
+                    return first_item, None, False
+                    
                 return data, None, False
             except json.JSONDecodeError:
+                # Fallback: maybe it's multiple objects not wrapped in an array?
+                try:
+                    data = json.loads(f"[{raw_text}]")
+                    if isinstance(data, list) and len(data) > 0:
+                        first_item = data[0]
+                        first_item.setdefault('issues', []).append("Multiple items detected on one scan")
+                        return first_item, None, False
+                except json.JSONDecodeError:
+                    pass
                 return None, f"Failed to parse JSON: {raw_text}", False
                 
         except Exception as e:

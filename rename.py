@@ -1,8 +1,10 @@
 import re
 
 def sanitize_filename(name):
+    if name is None:
+        name = "Unknown"
     # Remove unsafe characters
-    return re.sub(r'[^\w\s-]', '', name).strip()
+    return re.sub(r'[^\w\s-]', '', str(name)).strip()
 
 def truncate_retailer(retailer, max_len=25):
     sanitized = sanitize_filename(retailer)

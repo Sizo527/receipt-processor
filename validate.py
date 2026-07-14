@@ -27,6 +27,12 @@ def validate_receipt_data(data):
     """
     mapped_data = dict(data)
     
+    # Check Required Fields
+    for field in ['date', 'retailer', 'category', 'amount']:
+        if mapped_data.get(field) is None:
+            return False, mapped_data, f"Missing required field: {field}"
+    
+    
     # Check Confidence
     confidence = mapped_data.get('confidence', 0.0)
     try:
